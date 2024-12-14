@@ -23,12 +23,12 @@ fi
 
 # Funkce pro aktualizaci .bashrc
 update_bashrc() {
-    sudo sed -i 's/\(echo.*| mail -s "Alert: Root Access from.*"\) [A-Za-z0-9._%+-]\+@[A-Za-z0-9.-]\+\.[A-Z|a-z]\{2,\}/\1 '"$NEW_EMAIL"'/' $BASHRC_FILE
+    sudo sed -i 's/\(echo.*| mutt -s "Alert: Root Access from.*"\) [A-Za-z0-9._%+-]\+@[A-Za-z0-9.-]\+\.[A-Z|a-z]\{2,\}/\1 '"$NEW_EMAIL"'/' $BASHRC_FILE
 }
 
 # Funkce pro ověření změny
 check_bashrc() {
-    if grep -q "echo.*| mail -s \"Alert: Root Access from.*\" $NEW_EMAIL" $BASHRC_FILE; then
+    if grep -q "echo.*| mutt -s \"Alert: Root Access from.*\" $NEW_EMAIL" $BASHRC_FILE; then
         return 0
     else
         return 1
