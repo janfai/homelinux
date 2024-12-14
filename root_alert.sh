@@ -23,12 +23,13 @@ fi
 
 # Funkce pro aktualizaci .bashrc
 update_bashrc() {
-    sudo sed -i 's/\(echo.*| mutt -s "Alert: Root Access from.*"\) [A-Za-z0-9._%+-]\+@[A-Za-z0-9.-]\+\.[A-Z|a-z]\{2,\}/\1 '"$NEW_EMAIL"'/' $BASHRC_FILE
+    # Nahradí 'mail' za 'mutt' a jakoukoliv e-mailovou adresu za 'root'
+    sudo sed -i '/ALERT.*Root Shell Access/s/mail/mutt/g; /ALERT.*Root Shell Access/s/[A-Za-z0-9._%+-]\+@[A-Za-z0-9.-]\+\.[A-Z|a-z]\{2,\}/root/g' "$BASHRC_FILE"
 }
 
 # Funkce pro ověření změny
 check_bashrc() {
-    if grep -q "echo.*| mutt -s \"Alert: Root Access from.*\" $NEW_EMAIL" $BASHRC_FILE; then
+    if grep -q "echo.*| mutt -s \"Alert: Root Access from.*\" root" "$BASHRC_FILE"; then
         return 0
     else
         return 1
@@ -37,9 +38,9 @@ check_bashrc() {
 
 # Funkce pro odeslání výsledku emailem
 send_result_email() {
-    local subject="Výsledek změny e-mailu v .bashrc"
+    local subject="Výsledek změny e-mailu a příkazu v .bashrc"
     local body="$1"
-    echo "$body" | mutt -s "$subject" $ADMIN_EMAIL
+    echo "$body" | mutt -s "$subject" "$ADMIN_EMAIL"
 }
 
 # Provedení aktualizace
@@ -47,12 +48,12 @@ update_bashrc
 
 # Ověření změn a odeslání výsledku
 if check_bashrc; then
-    send_result_email "Změna e-mailu v .bashrc byla úspěšná. E-mail byl nastaven na '$NEW_EMAIL'."
-    echo "E-mail v .bashrc byl úspěšně aktualizován na '$NEW_EMAIL'."
+    send_result_email "Změna e-mailu a příkazu v .bashrc byla úspěšná. E-mail byl nastaven na '$NEW_EMAIL' a příkaz byl změněn na 'mutt'."
+    echo "E-mail a příkaz v .bashrc byly úspěšně aktualizovány."
 else
-    send_result_email "Změna e-mailu v .bashrc nebyla úspěšná."
-    echo "Chyba: Aktualizace e-mailu v .bashrc se nezdařila."
+    send_result_email "Změna e-mailu a příkazu v .bashrc nebyla úspěšná."
+    echo "Chyba: Aktualizace e-mailu a příkazu v .bashrc se nezdařila."
 fi
 
 # Aplikace změn v aktuální relaci
-source $BASHRC_FILE
+source "$BASHRC_FILE"
