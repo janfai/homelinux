@@ -6,7 +6,7 @@
 #        Po provedení změn ověří úspěšnost aktualizace a odešle výsledek na zadaný e-mail.
 #
 # Použití: Tento skript lze stáhnout a spustit jedním příkazem:
-#   curl -sSL https://example.com/update_ossec.sh | sudo bash
+#   curl -sSL https://raw.githubusercontent.com/janfai/homelinux/main/ossec_reconfigure.sh | sudo bash
 #
 # Poznámka: Ujistěte se, že spouštíte příkaz s právy sudo.
 
