@@ -9,14 +9,12 @@ OUTPUT_FILE=$(mktemp)
     echo ""
 
     echo "=== Verze desktopového prostředí ==="
-    if command -v xfce4-about &>/dev/null; then
-        xfce4-about
-    elif command -v cinnamon --version &>/dev/null; then
+    if command -v cinnamon --version &>/dev/null; then
         cinnamon --version
-    elif command -v mate-about --version &>/dev/null; then
-        mate-about --version
+    elif dpkg-query -Wf 'Cinnamon verze: ${Version}\n' cinnamon &>/dev/null; then
+        dpkg-query -Wf 'Cinnamon verze: ${Version}\n' cinnamon
     else
-        echo "Verzi desktopového prostředí se nepodařilo zjistit"
+        echo "Nelze zjistit verzi Cinnamon"
     fi
     echo ""
 
@@ -59,7 +57,7 @@ OUTPUT_FILE=$(mktemp)
     echo ""
 
     echo "=== Nainstalované důležité balíčky ==="
-    dpkg -l | grep -E "linux-image|linux-headers|xorg|xfce|cinnamon|mate-desktop|firefox|chromium"
+    dpkg -l | grep -E "linux-image|linux-headers|xorg|cinnamon|mate-desktop|firefox|chromium"
     echo ""
 
     echo "=== Poslední reboot systému ==="
@@ -80,7 +78,7 @@ PASTEBIN_URL=$(cat "$OUTPUT_FILE" | nc termbin.com 9999)
 
 # Výstup odkazu a instrukce pro uživatele
 echo ""
-echo "=== Odkaz na výstup ==="
+echo "=== Odkaz na výstup ===="
 echo "$PASTEBIN_URL"
 echo ""
 echo "Zkopírujte tento odkaz a pošlete ho spolu se screenshotem tohoto terminálu."
