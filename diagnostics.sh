@@ -9,7 +9,9 @@ OUTPUT_FILE=$(mktemp)
     echo ""
 
     echo "=== Verze desktopového prostředí ==="
-    if command -v cinnamon --version &>/dev/null; then
+    if command -v xfce4-about &>/dev/null; then
+        xfce4-about
+    elif command -v cinnamon --version &>/dev/null; then
         cinnamon --version
     elif command -v mate-about --version &>/dev/null; then
         mate-about --version
@@ -30,11 +32,15 @@ OUTPUT_FILE=$(mktemp)
     echo ""
 
     echo "=== Verze prohlížečů ==="
-    if command -v firefox &>/dev/null; then
+    if [ -x /opt/firefox/firefox ]; then
+        echo "Firefox je nainstalován v /opt/firefox"
+        /opt/firefox/firefox --version
+    elif command -v firefox &>/dev/null; then
         firefox --version
     else
         echo "Firefox není nainstalován"
     fi
+
     if command -v chromium-browser &>/dev/null; then
         chromium-browser --version
     elif command -v chromium &>/dev/null; then
@@ -53,7 +59,7 @@ OUTPUT_FILE=$(mktemp)
     echo ""
 
     echo "=== Nainstalované důležité balíčky ==="
-    dpkg -l | grep -E "linux-image|linux-headers|xorg|cinnamon|mate-desktop|firefox|chromium"
+    dpkg -l | grep -E "linux-image|linux-headers|xorg|xfce|cinnamon|mate-desktop|firefox|chromium"
     echo ""
 
     echo "=== Poslední reboot systému ==="
@@ -69,8 +75,8 @@ OUTPUT_FILE=$(mktemp)
 
 } > "$OUTPUT_FILE"
 
-# Upload na Pastebin pomocí curl (bez registrace)
-PASTEBIN_URL=$(curl -s -F 'file=@'"$OUTPUT_FILE" https://paste.rs)
+# Upload na Termbin
+PASTEBIN_URL=$(cat "$OUTPUT_FILE" | nc termbin.com 9999)
 
 # Výstup odkazu a instrukce pro uživatele
 echo ""
